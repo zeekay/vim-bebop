@@ -2,7 +2,7 @@ f g:bebop_disabled == 1
     finish
 endif
 
-function! BebopComplete(findstart, base)
+function! BebopCoffeeComplete(findstart, base)
     if a:findstart
         let line = getline('.')
         let start = col('.') - 1
@@ -11,15 +11,15 @@ function! BebopComplete(findstart, base)
         endwhile
         return start
     else
-        py vim.command('return ' + bebop.coffee.complete(vim.eval('a:base')))
+        py vim.command('return ' + vimbop.coffee.complete(vim.eval('a:base')))
     endif
 endfunction
 
-au FileType coffee setlocal omnifunc=BebopComplete
-au FileType coffee command! -nargs=* BebopEval     py bebop.coffee.eval(<f-args>)
-au FileType coffee command! -nargs=0 BebopEvalLine   py bebop.coffee.eval_line()
-au FileType coffee command! -nargs=0 BebopEvalBuffer py bebop.coffee.eval_buffer()
-au FileType coffee nnoremap <leader>ee :BebopEval<space>
-au FileType coffee nnoremap <leader>eb :BebopEvalBuffer<cr>
-au FileType coffee nnoremap <leader>el :BebopEvalLine<cr>
-au FileType coffee vnoremap <leader>er :py bebop.coffee.eval_range()<cr>
+setlocal omnifunc=BebopCoffeeComplete
+command! -nargs=* BebopCoffeeEval     py vimbop.coffee.eval(<f-args>)
+command! -nargs=0 BebopCoffeeEvalLine   py vimbop.coffee.eval_line()
+command! -nargs=0 BebopCoffeeEvalBuffer py vimbop.coffee.eval_buffer()
+nnoremap <leader>ee :BebopCoffeeEval<space>
+nnoremap <leader>eb :BebopCoffeeEvalBuffer<cr>
+nnoremap <leader>el :BebopEvalLine<cr>
+vnoremap <leader>er :py vimbop.coffee.eval_range()<cr>

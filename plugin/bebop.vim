@@ -8,8 +8,8 @@ if !exists('g:bebop_complete')
    let g:bebop_complete = 0
 endif
 
-if !exists('g:bebop_complete')
-   let g:bebop_complete = 0
+if !exists('g:bebop_disabled')
+   let g:bebop_disabled = 0
 endif
 
 if !exists('g:bebop_enable_javascript')
@@ -20,14 +20,16 @@ if !exists('g:bebop_enable_coffee')
    let g:bebop_enable_coffee = 1
 endif
 
-" Try to import bebop, if it's unavailable we'll quit with an error and
-" disable bebop.
 python <<EOF
+import sys
 import vim
+
+# add vimbop to syspath
+sys.path.append(vim.eval("expand('<sfile>:p:h')")  + '/lib/')
+
 try:
-    import bebop
+    import vimbop
 except ImportError:
-    vim.command('echoerr "%s"' % 'Unable to import bebop!')
+    vim.command('echoerr "%s"' % 'Unable to import vimbop!')
     vim.command('let g:bebop_disabled = 1')
-    vim.command('finish')
 EOF

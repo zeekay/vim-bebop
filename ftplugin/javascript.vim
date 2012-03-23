@@ -11,15 +11,15 @@ function! BebopJsComplete(findstart, base)
         endwhile
         return start
     else
-        py vim.command('return ' + bebop.js.complete(vim.eval('a:base')))
+        py vim.command('return ' + vimbop.js.complete(vim.eval('a:base')))
     endif
 endfunction
 
-au FileType javascript setlocal omnifunc=BebopJsComplete
-au FileType javascript command! -nargs=0 BebopJsEvalBuffer py bebop.js.eval_buffer()
-au FileType javascript command! -nargs=* BebopJsEval     py bebop.js.eval_code(<f-args>)
-au FileType javascript command! -nargs=0 BebopJsEvalLine   py bebop.js.eval_line()
-au FileType javascript nnoremap <leader>eb :BebopJsEvalBuffer<cr>
-au FileType javascript nnoremap <leader>ee :BebopJsEval<space>
-au FileType javascript nnoremap <leader>el :BebopJsEvalLine<cr>
-au FileType javascript vnoremap <leader>er :py bebop.js.eval_range()<cr>
+setlocal omnifunc=BebopJsComplete
+command! -nargs=0 BebopJsEvalBuffer py vimbop.js.eval_buffer()
+command! -nargs=* BebopJsEval     py vimbop.js.eval_code(<f-args>)
+command! -nargs=0 BebopJsEvalLine   py vimbop.js.eval_line()
+nnoremap <leader>eb :BebopJsEvalBuffer<cr>
+nnoremap <leader>ee :BebopJsEval<space>
+nnoremap <leader>el :BebopJsEvalLine<cr>
+vnoremap <leader>er :py vimbop.js.eval_range()<cr>
