@@ -28,8 +28,8 @@ import vim
 sys.path.append(vim.eval("expand('<sfile>:p:h')")  + '/lib/')
 
 try:
-    import vimbop
+    import vimbop.coffee
+    import vimbop.js
 except ImportError:
-    vim.command('echoerr "%s"' % 'Unable to import vimbop!')
     vim.command('let g:bebop_disabled = 1')
 EOF

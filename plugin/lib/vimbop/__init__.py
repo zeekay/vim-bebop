@@ -1,2 +1,1 @@
-import coffee
-import js
+__all__ = ['coffee', 'js']
