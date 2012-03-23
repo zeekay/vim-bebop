@@ -1,4 +1,4 @@
-f g:bebop_disabled == 1
+if g:bebop_disabled == 1
     finish
 endif
 
@@ -21,5 +21,5 @@ command! -nargs=0 BebopCoffeeEvalLine   py vimbop.coffee.eval_line()
 command! -nargs=0 BebopCoffeeEvalBuffer py vimbop.coffee.eval_buffer()
 nnoremap <leader>ee :BebopCoffeeEval<space>
 nnoremap <leader>eb :BebopCoffeeEvalBuffer<cr>
-nnoremap <leader>el :BebopEvalLine<cr>
+nnoremap <leader>el :BebopCoffeeEvalLine<cr>
 vnoremap <leader>er :py vimbop.coffee.eval_range()<cr>
