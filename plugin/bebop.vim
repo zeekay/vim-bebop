@@ -4,20 +4,20 @@ else
     finish
 endif
 
-if !exists('g:bebop_complete')
-   let g:bebop_complete = 0
-endif
-
-if !exists('g:bebop_disabled')
-   let g:bebop_disabled = 0
-endif
-
-if !exists('g:bebop_enable_javascript')
-   let g:bebop_enable_javascript = 1
+if !exists('g:bebop_enable_js')
+   let g:bebop_enable_js = 1
 endif
 
 if !exists('g:bebop_enable_coffee')
    let g:bebop_enable_coffee = 1
+endif
+
+if !exists('g:bebop_complete_js')
+   let g:bebop_complete_js = 1
+endif
+
+if !exists('g:bebop_complete_coffee')
+   let g:bebop_complete_coffee = 1
 endif
 
 python <<EOF
@@ -27,9 +27,17 @@ import vim
 # add vimbop to syspath
 sys.path.append(vim.eval("expand('<sfile>:p:h')")  + '/lib/')
 
-try:
-    import vimbop.coffee
-    import vimbop.js
-except ImportError:
-    vim.command('let g:bebop_disabled = 1')
+import vimbop
 EOF
+
+if eval('g:bebop_enable_js') && eval('g:bebop_complete_js')
+    autocmd FileType javascript set omnifunc=BebopJsComplete
+endif
+
+if eval('g:bebop_enable_coffee') && eval('g:bebop_complete_coffee')
+    autocmd FileType coffee set omnifunc=BebopCoffeeComplete
+endif
+
+command! -nargs=* BebopActive       py vimbop.active(<f-args>)
+command! -nargs=0 BebopListeners    py vimbop.listeners()
+command! -nargs=0 BebopSync         py vimbop.sync()
