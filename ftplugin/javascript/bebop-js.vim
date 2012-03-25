@@ -12,7 +12,11 @@ if eval('g:bebop_enable_js')
         endif
     endfunction
 
-    command! -nargs=* BebopJsEval       py vimbop.js.eval(<f-args>)
+    function! s:BebopJsCmdComplete(arglead, line, pos)
+        py vim.command('return ' + vimbop.js.complete(vim.eval('a:line')[11:], True))
+    endfunction
+
+    command! -nargs=* -complete=customlist,s:BebopJsCmdComplete BebopJsEval py vimbop.js.eval(<f-args>)
     command! -nargs=0 BebopJsEvalBuffer py vimbop.js.eval_buffer()
     command! -nargs=0 BebopJsEvalLine   py vimbop.js.eval_line()
     nnoremap <leader>eb :BebopJsEvalBuffer<cr>
