@@ -23,11 +23,12 @@ endif
 python <<EOF
 import sys
 import vim
-
 # add vimbop to syspath
 sys.path.append(vim.eval("expand('<sfile>:p:h')")  + '/lib/')
 
 import vimbop
+import vimbop.js
+import vimbop.coffee
 EOF
 
 if eval('g:bebop_enable_js') && eval('g:bebop_complete_js')
@@ -41,3 +42,4 @@ endif
 command! -nargs=* BebopActive       py vimbop.active(<f-args>)
 command! -nargs=0 BebopListeners    py vimbop.listeners()
 command! -nargs=0 BebopSync         py vimbop.sync()
+command! -bang -nargs=* BebopReload       py vimbop.reload("<bang>", <f-args>)
