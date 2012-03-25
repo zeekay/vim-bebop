@@ -14,13 +14,12 @@ class CoffeeError(Exception):
         return self.error
 
 
-def complete(base):
+def complete(line, base, col, cmdline=False):
     '''
     Returns completions for CoffeeScript.
     '''
     base = base or ''
-    col = int(vim.eval("col('.')"))
-    line = vim.eval("getline('.')")
+    col = int(col)
 
     try:
         obj = IDENTIFIER_REGEX.findall(line[:col])[-1][:-(len(base)+1)]
@@ -57,13 +56,13 @@ def eval(*args):
 
 
 def eval_line():
-    return eval(vim.current.line)
+    print eval(vim.current.line)
 
 
 def eval_range():
     r = vim.current.range
-    return eval('\n'.join(vim.current.buffer[r.start:r.end+1]))
+    print eval('\n'.join(vim.current.buffer[r.start:r.end+1]))
 
 
 def eval_buffer():
-    return eval('\n'.join(vim.current.buffer))
+    print eval('\n'.join(vim.current.buffer))

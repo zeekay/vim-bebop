@@ -5,20 +5,23 @@ from bebop import client
 IDENTIFIER_REGEX = re.compile(r'[$a-zA-Z_][()0-9a-zA-Z_$.\'"]*')
 
 
-def complete(base, cmdline=False):
+def complete(line, base, col, cmdline=False):
     '''
     Returns completions for Vim.
     '''
+    base = base or ''
+    col = int(col)
+
     try:
-        if cmdline:
-            obj = IDENTIFIER_REGEX.findall(base)[-1]
-        else:
-            base = base or ''
-            col = int(vim.eval("col('.')"))
-            line = vim.eval("getline('.')")
-            obj = IDENTIFIER_REGEX.findall(line[:col])[-1][:-(len(base)+1)]
+        obj = IDENTIFIER_REGEX.findall(line[:col])[-1][:-(len(base)+1)]
     except IndexError:
         return '[]'
+
+    if cmdline:
+        if '.' not in obj:
+            obj = 'this'
+        else:
+            obj, base = obj.rsplit('.', 1)
 
     result = client.complete(obj)
     if result:
@@ -36,19 +39,19 @@ def eval_line():
     '''
     Send current line to Bebop.
     '''
-    return client.eval(vim.current.line)
+    print client.eval(vim.current.line)
 
 
 def eval_range():
     '''
-    Sends range to Bebop.
+    sends range to bebop.
     '''
     r = vim.current.range
-    return client.eval('\n'.join(vim.current.buffer[r.start:r.end+1]))
+    print client.eval('\n'.join(vim.current.buffer[r.start:r.end+1]))
 
 
 def eval_buffer():
     '''
     Send current buffer to Bebop.
     '''
-    return client.eval('\n'.join(vim.current.buffer))
+    print client.eval('\n'.join(vim.current.buffer))
