@@ -5,16 +5,18 @@ from bebop import client
 IDENTIFIER_REGEX = re.compile(r'[$a-zA-Z_][()0-9a-zA-Z_$.\'"]*')
 
 
-def complete(base):
+def complete(base, cmdline=False):
     '''
     Returns completions for Vim.
     '''
-    base = base or ''
-    col = int(vim.eval("col('.')"))
-    line = vim.eval("getline('.')")
-
     try:
-        obj = IDENTIFIER_REGEX.findall(line[:col])[-1][:-(len(base)+1)]
+        if cmdline:
+            obj = IDENTIFIER_REGEX.findall(base)[-1]
+        else:
+            base = base or ''
+            col = int(vim.eval("col('.')"))
+            line = vim.eval("getline('.')")
+            obj = IDENTIFIER_REGEX.findall(line[:col])[-1][:-(len(base)+1)]
     except IndexError:
         return '[]'
 

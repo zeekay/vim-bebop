@@ -32,14 +32,14 @@ import vimbop.coffee
 EOF
 
 if eval('g:bebop_enable_js') && eval('g:bebop_complete_js')
-    autocmd FileType javascript set omnifunc=BebopJsComplete
+    au FileType javascript set omnifunc=BebopJsComplete
 endif
 
 if eval('g:bebop_enable_coffee') && eval('g:bebop_complete_coffee')
-    autocmd FileType coffee set omnifunc=BebopCoffeeComplete
+    au FileType coffee set omnifunc=BebopCoffeeComplete
 endif
 
-command! -nargs=* BebopActive       py vimbop.active(<f-args>)
+au FileType javascript,coffee command! -nargs=* BebopActive       py vimbop.active(<f-args>)
 command! -nargs=0 BebopListeners    py vimbop.listeners()
 command! -nargs=0 BebopSync         py vimbop.sync()
 command! -bang -nargs=* BebopReload       py vimbop.reload("<bang>", <f-args>)
