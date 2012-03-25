@@ -1,6 +1,7 @@
 import re
 from subprocess import Popen, PIPE
 import vim
+from vimbop import preview
 from bebop import client
 
 IDENTIFIER_REGEX = re.compile(r'[$a-zA-Z_][()0-9a-zA-Z_$.\'"]*')
@@ -52,17 +53,17 @@ def eval(*args):
     Sends code to Bebop, which will be run in browser.
     '''
     code = compile(' '.join(args))
-    print client.eval(code)
+    preview(client.eval(code))
 
 
 def eval_line():
-    print eval(vim.current.line)
+    preview(eval(vim.current.line))
 
 
 def eval_range():
     r = vim.current.range
-    print eval('\n'.join(vim.current.buffer[r.start:r.end+1]))
+    preview(eval('\n'.join(vim.current.buffer[r.start:r.end+1])))
 
 
 def eval_buffer():
-    print eval('\n'.join(vim.current.buffer))
+    preview(eval('\n'.join(vim.current.buffer)))

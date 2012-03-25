@@ -20,6 +20,14 @@ if !exists('g:bebop_complete_coffee')
    let g:bebop_complete_coffee = 1
 endif
 
+if !exists('g:bebop_preview_window')
+   let g:bebop_preview_window = 1
+endif
+
+if !exists('g:bebop_preview_location')
+   let g:bebop_preview_location = 'botright 10'
+endif
+
 python <<EOF
 import sys
 import vim

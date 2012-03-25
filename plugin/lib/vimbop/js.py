@@ -1,9 +1,9 @@
 import re
 import vim
 from bebop import client
+from vimbop import preview
 
 IDENTIFIER_REGEX = re.compile(r'[$a-zA-Z_][()0-9a-zA-Z_$.\'"]*')
-
 
 def complete(line, base, col, cmdline=False):
     '''
@@ -32,14 +32,14 @@ def complete(line, base, col, cmdline=False):
 
 def eval(*args):
     code = ' '.join(args)
-    print client.eval(code)
+    preview(client.eval(code))
 
 
 def eval_line():
     '''
     Send current line to Bebop.
     '''
-    print client.eval(vim.current.line)
+    preview(client.eval(vim.current.line))
 
 
 def eval_range():
@@ -47,11 +47,11 @@ def eval_range():
     sends range to bebop.
     '''
     r = vim.current.range
-    print client.eval('\n'.join(vim.current.buffer[r.start:r.end+1]))
+    preview(client.eval('\n'.join(vim.current.buffer[r.start:r.end+1])))
 
 
 def eval_buffer():
     '''
     Send current buffer to Bebop.
     '''
-    print client.eval('\n'.join(vim.current.buffer))
+    preview(client.eval('\n'.join(vim.current.buffer)))
