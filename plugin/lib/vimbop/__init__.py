@@ -1,6 +1,13 @@
-from bebop import client
+from bebop.client import Client
 import os
 import vim
+import json
+
+client = Client()
+
+def connect():
+    client.close()
+    client.connect()
 
 def listeners():
     print client.listeners()
@@ -21,12 +28,14 @@ def reload(bang, path=''):
 
     client.modified(path)
 
-def preview(res):
-    if not res:
+def preview(result):
+    result = json.dumps(result, sort_keys=True, indent=2)
+
+    if not result:
         return
 
-    if not vim.eval('g:bebop_preview_window'):
-        print res
+    if not int(vim.eval('g:bebop_preview_window')):
+        print result
         return
 
     def is_bebop_window(obj):
@@ -39,7 +48,7 @@ def preview(res):
             return obj.name.endswith('[Bebop]')
         return False
 
-    lines = iter(res.splitlines())
+    lines = iter(result.splitlines())
     if filter(lambda win: is_bebop_window(win), vim.windows):
         # found window with our buffer open already
         while not is_bebop_buffer(vim.current.window.buffer):

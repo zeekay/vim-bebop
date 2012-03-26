@@ -1,7 +1,6 @@
 import re
 import vim
-from bebop import client
-from vimbop import preview
+from vimbop import client, preview
 
 IDENTIFIER_REGEX = re.compile(r'[$a-zA-Z_][()0-9a-zA-Z_$.\'"]*')
 
