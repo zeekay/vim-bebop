@@ -19,8 +19,8 @@ if eval('g:bebop_enable_js')
     command! -nargs=* -complete=customlist,s:BebopJsCmdComplete BebopJsEval py vimbop.js.eval(<f-args>)
     command! -nargs=0 BebopJsEvalBuffer py vimbop.js.eval_buffer()
     command! -nargs=0 BebopJsEvalLine   py vimbop.js.eval_line()
-    nnoremap <leader>eb :BebopJsEvalBuffer<cr>
-    nnoremap <leader>ee :BebopJsEval<space>
-    nnoremap <leader>el :BebopJsEvalLine<cr>
-    vnoremap <leader>er :py vimbop.js.eval_range()<cr>
+    nnoremap <buffer> <leader>ee :BebopJsEval<space>
+    nnoremap <buffer> <leader>eb :BebopJsEvalBuffer<cr>
+    nnoremap <buffer> <leader>el :BebopJsEvalLine<cr>
+    vnoremap <buffer> <leader>e  :py vimbop.js.eval_range()<cr>
 endif

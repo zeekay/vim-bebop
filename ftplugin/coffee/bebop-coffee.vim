@@ -17,10 +17,10 @@ if g:bebop_enable_coffee
     endfunction
 
     command! -nargs=* -complete=customlist,s:BebopCoffeeCmdComplete BebopCoffeeEval py vimbop.coffee.eval(<f-args>)
-    command! -nargs=0 BebopCoffeeEvalLine   py vimbop.coffee.eval_line()
     command! -nargs=0 BebopCoffeeEvalBuffer py vimbop.coffee.eval_buffer()
-    nnoremap <leader>ee :BebopCoffeeEval<space>
-    nnoremap <leader>eb :BebopCoffeeEvalBuffer<cr>
-    nnoremap <leader>el :BebopCoffeeEvalLine<cr>
-    vnoremap <leader>er :py vimbop.coffee.eval_range()<cr>
+    command! -nargs=0 BebopCoffeeEvalLine   py vimbop.coffee.eval_line()
+    nnoremap <buffer> <leader>ee :BebopCoffeeEval<space>
+    nnoremap <buffer> <leader>eb :BebopCoffeeEvalBuffer<cr>
+    nnoremap <buffer> <leader>el :BebopCoffeeEvalLine<cr>
+    vnoremap <buffer> <leader>e  :py vimbop.coffee.eval_range()<cr>
 endif

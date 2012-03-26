@@ -22,6 +22,9 @@ def reload(bang, path=''):
     client.modified(path)
 
 def preview(res):
+    if not res:
+        return
+
     if not vim.eval('g:bebop_preview_window'):
         print res
         return
