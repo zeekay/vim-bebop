@@ -5,9 +5,10 @@ import json
 
 client = Client()
 
-def connect():
+
+def connect(host='127.0.0.1', port=1985):
     client.close()
-    client.connect()
+    client.connect(host=host, port=port)
 
 def listeners():
     print client.listeners()

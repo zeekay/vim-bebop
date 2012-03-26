@@ -4,6 +4,14 @@ else
     finish
 endif
 
+if !exists('g:bebop_host')
+   let g:bebop_host = '127.0.0.1'
+endif
+
+if !exists('g:bebop_port')
+   let g:bebop_port = 1985
+endif
+
 if !exists('g:bebop_auto_connect')
    let g:bebop_auto_connect = 1
 endif
@@ -43,10 +51,6 @@ import vimbop.js
 import vimbop.coffee
 EOF
 
-if eval('g:bebop_auto_connect')
-    py vimbop.connect()
-endif
-
 if eval('g:bebop_enable_js') && eval('g:bebop_complete_js')
     au FileType javascript set omnifunc=BebopJsComplete
 endif
@@ -56,9 +60,11 @@ if eval('g:bebop_enable_coffee') && eval('g:bebop_complete_coffee')
 endif
 
 au FileType javascript,coffee command! -nargs=* BebopActive       py vimbop.active(<f-args>)
-command! -nargs=0 BebopConnect      py vimbop.connect()
+command! -nargs=0 BebopConnect      py vimbop.connect(host=vim.eval('g:bebop_host'), port=int(vim.eval('g:bebop_port')))
 command! -nargs=0 BebopListeners    py vimbop.listeners()
 command! -bang -nargs=* BebopReload py vimbop.reload("<bang>", <f-args>)
 command! -nargs=0 BebopSync         py vimbop.sync()
 
-
+if eval('g:bebop_auto_connect')
+    BebopConnect
+endif
