@@ -59,9 +59,9 @@ if eval('g:bebop_enable_coffee') && eval('g:bebop_complete_coffee')
     au FileType coffee set omnifunc=BebopCoffeeComplete
 endif
 
-au FileType javascript,coffee command! -nargs=* BebopActive       py vimbop.active(<f-args>)
 command! -nargs=0 BebopConnect      py vimbop.connect(host=vim.eval('g:bebop_host'), port=int(vim.eval('g:bebop_port')))
-command! -nargs=0 BebopListeners    py vimbop.listeners()
+command! -nargs=0 BebopList         py vimbop.list_clients()
+command! -nargs=1 BebopSwitch       py vimbop.switch(<f-args>)
 command! -bang -nargs=* BebopReload py vimbop.reload("<bang>", <f-args>)
 command! -nargs=0 BebopSync         py vimbop.sync()
 

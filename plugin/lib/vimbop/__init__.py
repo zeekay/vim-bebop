@@ -5,19 +5,18 @@ import json
 
 client = Client()
 
-
 def connect(host='127.0.0.1', port=1985):
     client.close()
     client.connect(host=host, port=port)
 
-def listeners():
+def list_clients():
     print client.listeners()
 
 def sync():
     client.sync()
 
-def active(listeners):
-    client.active(listeners)
+def switch(listener):
+    client.active(listener)
 
 def reload(bang, path=''):
     if bang:
