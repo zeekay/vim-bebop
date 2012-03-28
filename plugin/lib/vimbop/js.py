@@ -4,6 +4,7 @@ from vimbop import client, preview
 
 IDENTIFIER_REGEX = re.compile(r'[$a-zA-Z_][()0-9a-zA-Z_$.\'"]*')
 
+
 def complete(line, base, col, cmdline=False):
     '''
     Returns completions for Vim.
@@ -30,6 +31,9 @@ def complete(line, base, col, cmdline=False):
 
 
 def eval(*args):
+    '''
+    Displays result of eval'd code.
+    '''
     code = ' '.join(args)
     preview(client.eval(code))
 
