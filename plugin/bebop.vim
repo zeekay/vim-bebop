@@ -70,8 +70,8 @@ import vimbop.coffee
 EOF
 
 command! -nargs=0 BebopConnect      py vimbop.connect(host=vim.eval('g:bebop_host'), port=int(vim.eval('g:bebop_port')))
-command! -nargs=0 BebopList         py vimbop.list_clients()
-command! -nargs=1 BebopSwitch       py vimbop.switch(<f-args>)
+command! -nargs=0 BebopList         py vimbop.list_websocket_clients()
+command! -nargs=1 BebopSwitch       py vimbop.set_active_client(<f-args>)
 command! -bang -nargs=* BebopReload py vimbop.reload("<bang>", <f-args>)
 command! -nargs=0 BebopBroadcast    py vimbop.broadcast()
 

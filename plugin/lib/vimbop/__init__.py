@@ -6,7 +6,12 @@ import socket
 
 client = Client()
 
+
 def connect(host='127.0.0.1', port=1985):
+    '''
+    Establish a connection to Bebop and enable completions if it succeeds,
+    or disable them if it fails.
+    '''
     client.close()
     try:
         client.connect(host=host, port=port)
@@ -14,26 +19,65 @@ def connect(host='127.0.0.1', port=1985):
     except socket.error:
         vim.command('call bebop#DisableCompletion()')
 
-def list_clients():
-    print client.listeners()
 
-def sync():
-    client.sync()
+def list_websocket_clients():
+    '''
+    Lists connected WebSocket clients.
+    '''
+    print client.list_websocket_clients()
 
-def switch(listener):
-    client.active(listener)
 
-def reload(bang, path=''):
+def set_active_client(query):
+    '''
+    Switches the active client to the client which matches the query.
+    Tries to use index from BebopList, if that fails, expects query to be a substring of the client identifier.
+    '''
+    client.set_active_client(query)
+
+
+def broadcast():
+    '''
+    Toggles broadcast on.
+    '''
+    client.broadcast()
+
+
+def reload(bang, file=''):
+    '''
+    Attempts to reload a given file by sending the modified event to all WebSocket clients.
+    '''
     if bang:
-        # force reload
+        # Force reload
         return client.modified('')
 
-    if not path:
-        path = vim.current.buffer.name.replace(os.getcwd(), '')
+    if not file:
+        file = vim.current.buffer.name.replace(os.getcwd(), '')
 
-    client.modified(path)
+    client.modified(file)
+
+
+def is_bebop_window(win):
+    '''
+    Helper function which checks if the given window is Bebop's preview window.
+    '''
+    if win.buffer.name:
+        return win.buffer.name.endswith('[Bebop]')
+    return False
+
+
+def is_bebop_buffer(buf):
+    '''
+    Checks if given buffer is Bebop's preview window buffer.
+    '''
+    if buf.name:
+        return buf.name.endswith('[Bebop]')
+    return False
+
 
 def preview(result):
+    '''
+    Displays result in Bebop's preview window.
+    '''
     result = json.dumps(result, sort_keys=True, indent=2)
 
     if not result:
@@ -42,16 +86,6 @@ def preview(result):
     if not int(vim.eval('g:bebop_preview_window')):
         print result
         return
-
-    def is_bebop_window(obj):
-        if obj.buffer.name:
-            return obj.buffer.name.endswith('[Bebop]')
-        return False
-
-    def is_bebop_buffer(obj):
-        if obj.name:
-            return obj.name.endswith('[Bebop]')
-        return False
 
     lines = iter(result.splitlines())
     if filter(lambda win: is_bebop_window(win), vim.windows):
