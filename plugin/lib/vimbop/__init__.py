@@ -2,12 +2,17 @@ from bebop.client import Client
 import os
 import vim
 import json
+import socket
 
 client = Client()
 
 def connect(host='127.0.0.1', port=1985):
     client.close()
-    client.connect(host=host, port=port)
+    try:
+        client.connect(host=host, port=port)
+        vim.command('call bebop#EnableCompletion()')
+    except socket.error:
+        vim.command('call bebop#DisableCompletion()')
 
 def list_clients():
     print client.listeners()
