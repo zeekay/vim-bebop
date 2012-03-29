@@ -47,15 +47,22 @@ endif
 func! bebop#EnableCompletion()
     if eval('g:bebop_enable_js') && eval('g:bebop_complete_js')
         au FileType javascript setlocal omnifunc=BebopJsComplete
+        if &filetype == "javascript"
+            setlocal omnifunc=BebopJsComplete
+        endif
     endif
 
     if eval('g:bebop_enable_coffee') && eval('g:bebop_complete_coffee')
         au FileType coffee setlocal omnifunc=BebopCoffeeComplete
+        if &filetype == "coffee"
+            setlocal omnifunc=BebopCoffeeComplete
+        endif
     endif
 endf
 
 func! bebop#DisableCompletion()
     au FileType javascript,coffee setlocal omnifunc=javascriptcomplete#CompleteJS
+    setlocal omnifunc=javascriptcomplete#CompleteJS
 endf
 
 python <<EOF
@@ -73,7 +80,7 @@ command! -nargs=0 BebopConnect      py vimbop.connect(host=vim.eval('g:bebop_hos
 command! -nargs=0 BebopList         py vimbop.list_websocket_clients()
 command! -nargs=1 BebopSwitch       py vimbop.set_active_client(<f-args>)
 command! -bang -nargs=* BebopReload py vimbop.reload("<bang>", <f-args>)
-command! -nargs=0 BebopBroadcast    py vimbop.broadcast()
+command! -nargs=0 BebopBroadcast    py vimbop.toggle_broadcast()
 
 if eval('g:bebop_auto_connect')
     BebopConnect

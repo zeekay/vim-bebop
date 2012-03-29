@@ -35,11 +35,11 @@ def set_active_client(query):
     client.set_active_client(query)
 
 
-def broadcast():
+def toggle_broadcast():
     '''
     Toggles broadcast on.
     '''
-    client.broadcast()
+    client.toggle_broadcast()
 
 
 def reload(bang, file=''):
