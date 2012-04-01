@@ -1,10 +1,10 @@
 import re
 import vim
-from vimbop import client, preview
+from vimbop import client, disable_on_failure, preview
 
 IDENTIFIER_REGEX = re.compile(r'[$a-zA-Z_][()0-9a-zA-Z_$.\'"]*')
 
-
+@disable_on_failure
 def complete(line, base, col, cmdline=False):
     '''
     Returns completions for Vim.
@@ -30,6 +30,7 @@ def complete(line, base, col, cmdline=False):
         return '[]'
 
 
+@disable_on_failure
 def eval(*args):
     '''
     Displays result of eval'd code.
@@ -38,6 +39,7 @@ def eval(*args):
     preview(client.eval(code))
 
 
+@disable_on_failure
 def eval_line():
     '''
     Send current line to Bebop.
@@ -45,6 +47,7 @@ def eval_line():
     preview(client.eval(vim.current.line))
 
 
+@disable_on_failure
 def eval_range():
     '''
     sends range to bebop.
@@ -53,6 +56,7 @@ def eval_range():
     preview(client.eval('\n'.join(vim.current.buffer[r.start:r.end+1])))
 
 
+@disable_on_failure
 def eval_buffer():
     '''
     Send current buffer to Bebop.

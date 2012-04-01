@@ -4,45 +4,20 @@ else
     finish
 endif
 
-if !exists("g:bebop_enabled")
-    let g:bebop_enabled = 1
-endif
+let s:default_opts = {
+    \ 'bebop_enabled': 1,
+    \ 'bebop_host': '"127.0.0.1"',
+    \ 'bebop_port': 1985,
+    \ 'bebop_auto_connect': 1,
+    \ 'bebop_enable_js': 1,
+    \ 'bebop_enable_coffee': 1,
+    \ 'bebop_complete_js': 1,
+    \ 'bebop_complete_coffee': 1,
+    \ 'bebop_preview_window': 1,
+    \ 'bebop_preview_location': '"botright 10"'
+\ }
 
-if !exists('g:bebop_host')
-   let g:bebop_host = '127.0.0.1'
-endif
-
-if !exists('g:bebop_port')
-   let g:bebop_port = 1985
-endif
-
-if !exists('g:bebop_auto_connect')
-   let g:bebop_auto_connect = 1
-endif
-
-if !exists('g:bebop_enable_js')
-   let g:bebop_enable_js = 1
-endif
-
-if !exists('g:bebop_enable_coffee')
-   let g:bebop_enable_coffee = 1
-endif
-
-if !exists('g:bebop_complete_js')
-   let g:bebop_complete_js = 1
-endif
-
-if !exists('g:bebop_complete_coffee')
-   let g:bebop_complete_coffee = 1
-endif
-
-if !exists('g:bebop_preview_window')
-   let g:bebop_preview_window = 1
-endif
-
-if !exists('g:bebop_preview_location')
-   let g:bebop_preview_location = 'botright 10'
-endif
+for kv in items(s:default_opts) | exe 'let g:'.kv[0].'='.kv[1] | endfor
 
 func! bebop#EnableCompletion()
     if eval('g:bebop_enable_js') && eval('g:bebop_complete_js')

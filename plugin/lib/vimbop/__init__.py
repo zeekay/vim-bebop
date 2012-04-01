@@ -1,4 +1,4 @@
-from bebop.client import Client
+from bebop.client import BebopException, Client
 import os
 import vim
 import json
@@ -7,62 +7,22 @@ import socket
 client = Client()
 
 
-def connect(host='127.0.0.1', port=1985):
+def disable_on_failure(f):
     '''
-    Establish a connection to Bebop and enable completions if it succeeds,
-    or disable them if it fails.
+    Catches any Bebop errors and disables Bebop automatically.
     '''
-    client.close()
-    try:
-        client.connect(host=host, port=port)
-        vim.command('call bebop#EnableCompletion()')
-    except socket.error:
-        vim.command('call bebop#DisableCompletion()')
-
-
-def list_websocket_clients():
-    '''
-    Lists connected WebSocket clients.
-    '''
-    print client.list_websocket_clients()
-
-
-def set_active_client(query):
-    '''
-    Switches the active client to the client which matches the query.
-    Tries to use index from BebopList, if that fails, expects query to be a substring of the client identifier.
-    '''
-    client.set_active_client(query)
-
-
-def toggle_broadcast():
-    '''
-    Toggles broadcast on.
-    '''
-    client.toggle_broadcast()
-
-
-def reload(bang, file=''):
-    '''
-    Attempts to reload a given file by sending the modified event to all WebSocket clients.
-    '''
-    if bang:
-        # Force reload
-        return client.modified('')
-
-    if not file:
-        file = vim.current.buffer.name.replace(os.getcwd(), '')
-
-    client.modified(file)
-
-
-def is_bebop_window(win):
-    '''
-    Helper function which checks if the given window is Bebop's preview window.
-    '''
-    if win.buffer.name:
-        return win.buffer.name.endswith('[Bebop]')
-    return False
+    def wrapper(*args, **kwargs):
+        try:
+            return f(*args, **kwargs)
+        except BebopException as e:
+            vim.command('call bebop#DisableCompletion()')
+            print e
+        except socket.error as e:
+            if e.errno == 61:
+                print 'Unable to connect to Bebop.'
+            else:
+                print 'Not connected to Bebop.'
+    return wrapper
 
 
 def is_bebop_buffer(buf):
@@ -71,6 +31,15 @@ def is_bebop_buffer(buf):
     '''
     if buf.name:
         return buf.name.endswith('[Bebop]')
+    return False
+
+
+def is_bebop_window(win):
+    '''
+    Helper function which checks if the given window is Bebop's preview window.
+    '''
+    if win.buffer.name:
+        return win.buffer.name.endswith('[Bebop]')
     return False
 
 
@@ -117,3 +86,54 @@ def preview(result):
     vim.command('normal G')
     # return original window
     vim.command('wincmd p')
+
+
+@disable_on_failure
+def connect(host='127.0.0.1', port=1985):
+    '''
+    Establish a connection to Bebop and enable completions if it succeeds,
+    or disable them if it fails.
+    '''
+    client.close()
+    client.connect(host=host, port=port)
+    vim.command('call bebop#EnableCompletion()')
+
+
+@disable_on_failure
+def list_websocket_clients():
+    '''
+    Lists connected WebSocket clients.
+    '''
+    print client.list_websocket_clients()
+
+
+@disable_on_failure
+def set_active_client(query):
+    '''
+    Switches the active client to the client which matches the query.
+    Tries to use index from BebopList, if that fails, expects query to be a substring of the client identifier.
+    '''
+    client.set_active_client(query)
+
+
+@disable_on_failure
+def toggle_broadcast():
+    '''
+    Toggles broadcast on.
+    '''
+    client.toggle_broadcast()
+
+
+@disable_on_failure
+def reload(bang, file=''):
+    '''
+    Attempts to reload a given file by sending the modified event to all WebSocket clients.
+    '''
+    if bang:
+        # Force reload
+        return client.modified('')
+
+    if not file:
+        file = vim.current.buffer.name.replace(os.getcwd(), '')
+
+    client.modified(file)
