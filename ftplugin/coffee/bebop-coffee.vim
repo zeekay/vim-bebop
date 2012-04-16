@@ -16,7 +16,7 @@ function! BebopCoffeeComplete(findstart, base)
 endfunction
 
 function! s:BebopCoffeeCmdComplete(arglead, line, pos)
-    py vim.command('return ' + vimbop.Coffee.complete(vim.eval('a:line')[12:], '', vim.eval('a:pos'), cmdline=True))
+    py vim.command('return ' + vimbop.coffee.complete(vim.eval('a:line')[12:], '', vim.eval('a:pos'), cmdline=True))
 endfunction
 
 " It is insufficient to use function! to define our operator function as it
@@ -36,17 +36,17 @@ if !exists('*BebopCoffeeOperator')
         else
             return
         endif
-        py vimbop.Coffee.eval(vim.eval('@@'))
+        py vimbop.coffee.eval(vim.eval('@@'))
     endfunction
 endif
 
-command! -nargs=* -complete=customlist,s:BebopCoffeeCmdComplete BebopCoffeeEval py vimbop.Coffee.eval(<f-args>)
-command! -nargs=0 BebopCoffeeEvalBuffer py vimbop.Coffee.eval_buffer()
-command! -nargs=0 BebopCoffeeEvalLine   py vimbop.Coffee.eval_line()
+command! -nargs=* -complete=customlist,s:BebopCoffeeCmdComplete BebopCoffeeEval py vimbop.coffee.eval(<f-args>)
+command! -nargs=0 BebopCoffeeEvalBuffer py vimbop.coffee.eval_buffer()
+command! -nargs=0 BebopCoffeeEvalLine   py vimbop.coffee.eval_line()
 
 " Mappings
 nnoremap <buffer> <leader>e  :set operatorfunc=BebopCoffeeOperator<cr>g@
-vnoremap <buffer> <leader>e  :py vimbop.Coffee.eval_range()<cr>
+vnoremap <buffer> <leader>e  :py vimbop.coffee.eval_range()<cr>
 nnoremap <buffer> <leader>ee :BebopCoffeeEval<space>
 nnoremap <buffer> <leader>eb :BebopCoffeeEvalBuffer<cr>
 nnoremap <buffer> <leader>el :BebopCoffeeEvalLine<cr>
