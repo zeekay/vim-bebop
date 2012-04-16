@@ -19,6 +19,24 @@ let s:default_opts = {
 
 for kv in items(s:default_opts) | exe 'let g:'.kv[0].'='.kv[1] | endfor
 
+python <<EOF
+import sys
+import vim
+# add vimbop to syspath
+sys.path.append(vim.eval("expand('<sfile>:p:h')")  + '/lib/')
+
+try:
+    import vimbop
+    import vimbop.js
+    import vimbop.coffee
+except ImportError:
+    vim.command('let g:bebop_enabled = 0')
+EOF
+
+if !eval('g:bebop_enabled')
+    finish
+endif
+
 func! bebop#EnableCompletion()
     if eval('g:bebop_enable_js') && eval('g:bebop_complete_js')
         au FileType javascript setlocal omnifunc=BebopJsComplete
@@ -39,17 +57,6 @@ func! bebop#DisableCompletion()
     au FileType javascript,coffee setlocal omnifunc=javascriptcomplete#CompleteJS
     setlocal omnifunc=javascriptcomplete#CompleteJS
 endf
-
-python <<EOF
-import sys
-import vim
-# add vimbop to syspath
-sys.path.append(vim.eval("expand('<sfile>:p:h')")  + '/lib/')
-
-import vimbop
-import vimbop.js
-import vimbop.coffee
-EOF
 
 command! -nargs=0 BebopConnect      py vimbop.connect(host=vim.eval('g:bebop_host'), port=int(vim.eval('g:bebop_port')))
 command! -nargs=0 BebopList         py vimbop.list_websocket_clients()
