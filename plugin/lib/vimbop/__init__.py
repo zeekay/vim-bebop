@@ -67,6 +67,7 @@ def preview(result):
         vim.command('%s new' % vim.eval('g:bebop_preview_location'))
         vim.command('setlocal buftype=nofile')
         vim.command('setlocal bufhidden=hide')
+        vim.command('setlocal nobuflisted')
         vim.command('set previewwindow')
 
         if filter(lambda buf: is_bebop_buffer(buf), vim.buffers):
