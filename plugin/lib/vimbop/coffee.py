@@ -29,9 +29,37 @@ def compile(code):
 
 
 @disable_on_failure
-def complete(line, base, col, cmdline=False):
+def complete_cmdline(arglead, line, start):
     '''
-    Returns completions for CoffeeScript.
+    Returns completions Vim's commandline.
+    '''
+    try:
+        obj = IDENTIFIER_REGEX.findall(line)[-1]
+    except IndexError:
+        return '[]'
+
+    if '.' in obj:
+        # split into object we're looking for properties of and partial property name (which might not exist)
+        obj, prop = (obj.rsplit('.', 1) + [''])[:2]
+
+        # get leading part of completion
+        base = ''.join(arglead.rpartition('.')[:2])
+    else:
+        # complete this
+        obj, prop = 'this', obj
+        base = ''
+
+    result = client.complete(obj)
+    if result:
+        return repr(sorted((str(base + x) for x in result if prop.lower() in x.lower())))
+    else:
+        return '[]'
+
+
+@disable_on_failure
+def complete(line, base, col):
+    '''
+    Returns completions for Vim.
     '''
     base = base or ''
     col = int(col)

@@ -4,8 +4,37 @@ from vimbop import client, disable_on_failure, preview
 
 IDENTIFIER_REGEX = re.compile(r'[$a-zA-Z_][()0-9a-zA-Z_$.\'"]*')
 
+
 @disable_on_failure
-def complete(line, base, col, cmdline=False):
+def complete_cmdline(arglead, line, start):
+    '''
+    Returns completions Vim's commandline.
+    '''
+    try:
+        obj = IDENTIFIER_REGEX.findall(line)[-1]
+    except IndexError:
+        return '[]'
+
+    if '.' in obj:
+        # split into object we're looking for properties of and partial property name (which might not exist)
+        obj, prop = (obj.rsplit('.', 1) + [''])[:2]
+
+        # get leading part of completion
+        base = ''.join(arglead.rpartition('.')[:2])
+    else:
+        # complete this
+        obj, prop = 'this', obj
+        base = ''
+
+    result = client.complete(obj)
+    if result:
+        return repr(sorted((str(base + x) for x in result if prop.lower() in x.lower())))
+    else:
+        return '[]'
+
+
+@disable_on_failure
+def complete(line, base, col):
     '''
     Returns completions for Vim.
     '''
@@ -16,12 +45,6 @@ def complete(line, base, col, cmdline=False):
         obj = IDENTIFIER_REGEX.findall(line[:col])[-1][:-(len(base)+1)]
     except IndexError:
         return '[]'
-
-    if cmdline:
-        if '.' not in obj:
-            obj = 'this'
-        else:
-            obj, base = obj.rsplit('.', 1)
 
     result = client.complete(obj)
     if result:

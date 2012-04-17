@@ -15,8 +15,8 @@ function! BebopCoffeeComplete(findstart, base)
     endif
 endfunction
 
-function! s:BebopCoffeeCmdComplete(arglead, line, pos)
-    py vim.command('return ' + vimbop.coffee.complete(vim.eval('a:line')[12:], '', vim.eval('a:pos'), cmdline=True))
+function! s:BebopCoffeeCmdComplete(arglead, line, start)
+    py vim.command('return ' + vimbop.coffee.complete_cmdline(*[vim.eval(x) for x in ('a:arglead', 'a:line', 'a:start')]))
 endfunction
 
 " It is insufficient to use function! to define our operator function as it
