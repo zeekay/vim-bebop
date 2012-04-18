@@ -45,7 +45,7 @@ command! -nargs=0 BebopJsEvalBuffer py vimbop.js.eval_buffer()
 command! -nargs=0 BebopJsEvalLine   py vimbop.js.eval_line()
 
 " Mappings
-nnoremap <buffer> <leader>e  :set operatorfunc=BebopJsOperator | echo<cr>g@
+nnoremap <buffer> <leader>e  :set operatorfunc=BebopJsOperator<cr>g@
 vnoremap <buffer> <leader>e  :py vimbop.js.eval_range()<cr>
 nnoremap <buffer> <leader>ee :BebopJsEval<space>
 nnoremap <buffer> <leader>eb :BebopJsEvalBuffer<cr>
