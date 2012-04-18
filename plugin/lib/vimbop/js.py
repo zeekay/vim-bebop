@@ -6,6 +6,34 @@ IDENTIFIER_REGEX = re.compile(r'[$a-zA-Z_][()0-9a-zA-Z_$.\'"]*')
 
 
 @disable_on_failure
+def complete(line, base, col):
+    '''
+    Returns completions for Vim.
+    '''
+    base = base or ''
+    col = int(col)
+
+    try:
+        # obj = IDENTIFIER_REGEX.findall(line[:col])[-1][:-(len(base)+1)]
+        obj = IDENTIFIER_REGEX.findall(line[:col])[0]
+    except IndexError:
+        return '[]'
+
+    if not '.' in obj:
+        obj, base = 'this', obj
+
+    obj = obj.strip('.')
+
+    vim.command('echo "obj: %s, base: %s"' % (obj, base))
+
+    result = client.complete(obj)
+    if result:
+        return repr(sorted((str(x) for x in result if base.lower() in x.lower()), key=lambda x: x.startswith(base)))
+    else:
+        return '[]'
+
+
+@disable_on_failure
 def complete_cmdline(arglead, line, start):
     '''
     Returns completions Vim's commandline.
@@ -29,26 +57,6 @@ def complete_cmdline(arglead, line, start):
     result = client.complete(obj)
     if result:
         return repr(sorted((str(base + x) for x in result if prop.lower() in x.lower())))
-    else:
-        return '[]'
-
-
-@disable_on_failure
-def complete(line, base, col):
-    '''
-    Returns completions for Vim.
-    '''
-    base = base or ''
-    col = int(col)
-
-    try:
-        obj = IDENTIFIER_REGEX.findall(line[:col])[-1][:-(len(base)+1)]
-    except IndexError:
-        return '[]'
-
-    result = client.complete(obj)
-    if result:
-        return repr(sorted((str(x) for x in result if base.lower() in x.lower()), key=lambda x: x.startswith(base)))
     else:
         return '[]'
 

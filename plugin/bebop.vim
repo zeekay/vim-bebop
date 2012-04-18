@@ -14,7 +14,8 @@ let s:default_opts = {
     \ 'bebop_complete_js': 1,
     \ 'bebop_complete_coffee': 1,
     \ 'bebop_preview_window': 1,
-    \ 'bebop_preview_location': '"botright 10"'
+    \ 'bebop_preview_location': '"botright 10"',
+    \ 'bebop_enable_neocomplcache_patterns': 1
 \ }
 
 for kv in items(s:default_opts) | exe 'let g:'.kv[0].'='.kv[1] | endfor
@@ -51,6 +52,11 @@ func! bebop#EnableCompletion()
             setlocal omnifunc=BebopCoffeeComplete
         endif
     endif
+
+    if eval('g:bebop_enable_neocomplcache_patterns') && exists('g:neocomplcache_omni_patterns')
+        let g:neocomplcache_omni_patterns.coffee = '[^. *\t]\w*\|[^. *\t]\.\%(\h\w*\)\?|[^. *\t]\w*::\%(\w*\)\?'
+        let g:neocomplcache_omni_patterns.javascript = '[^. *\t]\w*\|[^. *\t]\.\%(\h\w*\)\?'
+    endif
 endf
 
 func! bebop#DisableCompletion()
@@ -63,6 +69,12 @@ command! -nargs=0 BebopList         py vimbop.list_websocket_clients()
 command! -nargs=1 BebopSwitch       py vimbop.set_active_client(<f-args>)
 command! -bang -nargs=* BebopReload py vimbop.reload("<bang>", <f-args>)
 command! -nargs=0 BebopBroadcast    py vimbop.toggle_broadcast()
+
+nnoremap <leader>bl :BebopList<cr>
+nnoremap <leader>br :BebopReload<cr>
+nnoremap <leader>bR :BebopReload!<cr>
+nnoremap <leader>bs :BebopSwitch<cr>
+nnoremap <leader>bc :BebopConnect<cr>
 
 if eval('g:bebop_auto_connect')
     BebopConnect
