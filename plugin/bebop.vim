@@ -67,14 +67,14 @@ endf
 
 command! -nargs=0 BebopConnect      py vimbop.connect(host=vim.eval('g:bebop_host'), port=int(vim.eval('g:bebop_port')))
 command! -nargs=0 BebopList         py vimbop.list_websocket_clients()
-command! -nargs=1 BebopSwitch       py vimbop.set_active_client(<f-args>)
+command! -nargs=1 BebopSwitch       py vimbop.set_active_client(<f-args>); vimbop.list_websocket_clients()
 command! -bang -nargs=* BebopReload py vimbop.reload("<bang>", <f-args>)
 command! -nargs=0 BebopBroadcast    py vimbop.toggle_broadcast()
 
 nnoremap <leader>bl :BebopList<cr>
 nnoremap <leader>br :BebopReload<cr>
 nnoremap <leader>bR :BebopReload!<cr>
-nnoremap <leader>bs :BebopSwitch<cr>
+nnoremap <leader>bs :BebopSwitch<space>
 nnoremap <leader>bc :BebopConnect<cr>
 
 if eval('g:bebop_auto_connect')
