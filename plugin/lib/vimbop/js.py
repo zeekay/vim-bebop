@@ -75,7 +75,7 @@ def eval_line():
     '''
     Send current line to Bebop.
     '''
-    preview(client.eval(vim.current.line))
+    eval(vim.current.line)
 
 
 @disable_on_failure
@@ -84,7 +84,7 @@ def eval_range():
     sends range to bebop.
     '''
     r = vim.current.range
-    preview(client.eval('\n'.join(vim.current.buffer[r.start:r.end+1])))
+    eval('\n'.join(vim.current.buffer[r.start:r.end+1]))
 
 
 @disable_on_failure
@@ -92,4 +92,4 @@ def eval_buffer():
     '''
     Send current buffer to Bebop.
     '''
-    preview(client.eval('\n'.join(vim.current.buffer)))
+    eval('\n'.join(vim.current.buffer))

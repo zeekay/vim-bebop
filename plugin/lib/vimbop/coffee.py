@@ -24,7 +24,8 @@ def compile(code):
         raise CoffeeError("Make sure coffeescript is installed")
     stdout, stderr = proc.communicate(code)
     if stderr:
-        raise CoffeeError(stderr.splitlines()[0][7:])
+        error_msg = stderr.splitlines()[0].split(':', 1)[1].strip()
+        raise CoffeeError("Coffeescript failed to compile: %s" % error_msg)
     return stdout
 
 
@@ -91,21 +92,24 @@ def eval(*args):
     '''
     Sends code to Bebop, which will be run in browser.
     '''
-    code = compile(' '.join(args))
-    preview(client.eval(code))
+    try:
+        code = compile(' '.join(args))
+        preview(client.eval(code))
+    except CoffeeError as e:
+        preview({'error': str(e)})
 
 
 @disable_on_failure
 def eval_line():
-    preview(eval(vim.current.line))
+    eval(vim.current.line)
 
 
 @disable_on_failure
 def eval_range():
     r = vim.current.range
-    preview(eval('\n'.join(vim.current.buffer[r.start:r.end+1])))
+    eval('\n'.join(vim.current.buffer[r.start:r.end+1]))
 
 
 @disable_on_failure
 def eval_buffer():
-    preview(eval('\n'.join(vim.current.buffer)))
+    eval('\n'.join(vim.current.buffer))

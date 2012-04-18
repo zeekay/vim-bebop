@@ -54,7 +54,8 @@ func! bebop#EnableCompletion()
     endif
 
     if eval('g:bebop_enable_neocomplcache_patterns') && exists('g:neocomplcache_omni_patterns')
-        let g:neocomplcache_omni_patterns.coffee = '[^. *\t]\w*\|[^. *\t]\.\%(\h\w*\)\?|[^. *\t]\w*::\%(\w*\)\?'
+        " let g:neocomplcache_omni_patterns.coffee = '[^. *\t]\w*\|[^. *\t]\.\%(\h\w*\)\?|[^. *\t]\w*::\%(\w*\)\?'
+        let g:neocomplcache_omni_patterns.coffee = '\S*\|\S*::\S*?'
         let g:neocomplcache_omni_patterns.javascript = '[^. *\t]\w*\|[^. *\t]\.\%(\h\w*\)\?'
     endif
 endf

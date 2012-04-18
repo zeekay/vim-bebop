@@ -47,10 +47,14 @@ def preview(result):
     '''
     Displays result in Bebop's preview window.
     '''
-    result = json.dumps(result, sort_keys=True, indent=2)
 
     if not result:
         return
+
+    if getattr(result, 'get', lambda x: None)('error'):
+        result = 'Error // %s' % str(result['error'])
+    else:
+        result = json.dumps(result, sort_keys=True, indent=2)
 
     if not int(vim.eval('g:bebop_preview_window')):
         print result
@@ -101,10 +105,12 @@ def connect(host='127.0.0.1', port=1985):
 
 
 @disable_on_failure
-def list_websocket_clients():
+def list_websocket_clients(host='127.0.0.1', port=1985):
     '''
     Lists connected WebSocket clients.
     '''
+    client.close()
+    client.connect(host=host, port=port)
     print client.list_websocket_clients()
 
 
