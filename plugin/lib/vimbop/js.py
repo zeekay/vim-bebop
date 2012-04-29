@@ -67,6 +67,8 @@ def eval(*args):
     Displays result of eval'd code.
     '''
     code = ' '.join(args)
+    if code.startswith('>'):
+        code = code[1:]
     preview(client.eval(code))
 
 

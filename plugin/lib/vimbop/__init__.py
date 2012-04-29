@@ -48,9 +48,6 @@ def preview(result):
     Displays result in Bebop's preview window.
     '''
 
-    if not result:
-        return
-
     if getattr(result, 'get', lambda x: None)('error'):
         result = 'Error // %s' % str(result['error'])
     else:
@@ -61,9 +58,14 @@ def preview(result):
         return
 
     lines = iter(result.splitlines())
-    if filter(lambda win: is_bebop_window(win), vim.windows):
+    stay_in_window = False
+
+    if is_bebop_buffer(vim.current.buffer):
+        # already in bebop buffer, don't leave it
+        stay_in_window = True
+    elif filter(lambda win: is_bebop_window(win), vim.windows):
         # found window with our buffer open already
-        while not is_bebop_buffer(vim.current.window.buffer):
+        while not is_bebop_buffer(vim.current.buffer):
             vim.command('wincmd w')
     else:
         # create new preview window
@@ -73,6 +75,8 @@ def preview(result):
         vim.command('setlocal bufhidden=hide')
         vim.command('setlocal nobuflisted')
         vim.command('set previewwindow')
+        vim.command('map <buffer> <enter> :BebopJsEvalLine<cr>')
+        vim.command('imap <buffer> <enter> <c-o>:BebopJsEvalLine<cr>')
 
         if filter(lambda buf: is_bebop_buffer(buf), vim.buffers):
             # found our buffer
@@ -86,11 +90,14 @@ def preview(result):
     # append response
     for line in lines:
         vim.current.buffer.append(line)
+    vim.current.buffer.append('> ')
 
-    # scroll to bottom
-    vim.command('normal G')
-    # return original window
-    vim.command('wincmd p')
+    # scroll to bottom and in front of cursor
+    vim.command('normal Gll')
+
+    if not stay_in_window:
+        # return original window
+        vim.command('wincmd p')
 
 
 @disable_on_failure
