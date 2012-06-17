@@ -24,8 +24,6 @@ def complete(line, base, col):
 
     obj = obj.strip('.')
 
-    vim.command('echo "obj: %s, base: %s"' % (obj, base))
-
     result = client.complete(obj)
     if result:
         return repr(sorted((str(x) for x in result if base.lower() in x.lower()), key=lambda x: x.startswith(base)))

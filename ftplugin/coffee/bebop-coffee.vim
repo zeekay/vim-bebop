@@ -50,3 +50,11 @@ vnoremap <buffer> <leader>e  :py vimbop.coffee.eval_range()<cr>
 nnoremap <buffer> <leader>ee :BebopCoffeeEval<space>
 nnoremap <buffer> <leader>eb :BebopCoffeeEvalBuffer<cr>
 nnoremap <buffer> <leader>el :BebopCoffeeEvalLine<cr>
+
+" Incremental & eval
+map <c-a> <c-a>:py vimbop.coffee.eval_line()<cr>
+map <c-x> <c-x>:py vimbop.coffee.eval_line()<cr>
+map <cr> :py vimbop.coffee.eval_line()<cr>
+vmap <cr> :py vimbop.coffee.eval_range()<cr>
+map <c-cr> :py vimbop.coffee.eval_buffer()<cr>
+vmap <c-cr> :py vimbop.coffee.eval_range()<cr>

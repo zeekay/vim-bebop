@@ -18,7 +18,13 @@ let s:default_opts = {
     \ 'bebop_enable_neocomplcache_patterns': 1
 \ }
 
-for kv in items(s:default_opts) | exe 'let g:'.kv[0].'='.kv[1] | endfor
+for kv in items(s:default_opts)
+    let k = 'g:'.kv[0]
+    let v = kv[1]
+    if !exists(k)
+        exe 'let '.k.'='.v
+    endif
+endfor
 
 python <<EOF
 import sys
@@ -31,12 +37,33 @@ try:
     import vimbop.js
     import vimbop.coffee
 except ImportError:
-    vim.command('let g:bebop_enabled = 0')
+    vim.command('let g:bebop_not_installed = 1')
 EOF
 
-if !eval('g:bebop_enabled')
+if exists('g:bebop_not_installed')
     finish
 endif
+
+func! bebop#Init()
+    command! -nargs=0 BebopConnect      py vimbop.connect(host=vim.eval('g:bebop_host'), port=int(vim.eval('g:bebop_port')))
+    command! -nargs=0 BebopList         py vimbop.list_websocket_clients()
+    command! -nargs=1 BebopSwitch       py vimbop.set_active_client(<f-args>); vimbop.list_websocket_clients()
+    command! -bang -nargs=* BebopReload py vimbop.reload("<bang>", <f-args>)
+    command! -nargs=0 BebopBroadcast    py vimbop.toggle_broadcast()
+
+    nnoremap <leader>bl :BebopList<cr>
+    nnoremap <leader>br :BebopReload<cr>
+    nnoremap <leader>bR :BebopReload!<cr>
+    nnoremap <leader>bs :BebopSwitch<space>
+    nnoremap <leader>bc :BebopConnect<cr>
+    BebopConnect
+endf
+
+func! bebop#Enable()
+    let g:bebop_enabled = 1
+    call bebop#Init()
+    exe 'set ft='.&ft
+endf
 
 func! bebop#EnableCompletion()
     if eval('g:bebop_enable_js') && eval('g:bebop_complete_js')
@@ -65,18 +92,9 @@ func! bebop#DisableCompletion()
     setlocal omnifunc=javascriptcomplete#CompleteJS
 endf
 
-command! -nargs=0 BebopConnect      py vimbop.connect(host=vim.eval('g:bebop_host'), port=int(vim.eval('g:bebop_port')))
-command! -nargs=0 BebopList         py vimbop.list_websocket_clients()
-command! -nargs=1 BebopSwitch       py vimbop.set_active_client(<f-args>); vimbop.list_websocket_clients()
-command! -bang -nargs=* BebopReload py vimbop.reload("<bang>", <f-args>)
-command! -nargs=0 BebopBroadcast    py vimbop.toggle_broadcast()
-
-nnoremap <leader>bl :BebopList<cr>
-nnoremap <leader>br :BebopReload<cr>
-nnoremap <leader>bR :BebopReload!<cr>
-nnoremap <leader>bs :BebopSwitch<space>
-nnoremap <leader>bc :BebopConnect<cr>
-
-if eval('g:bebop_auto_connect')
-    BebopConnect
+if eval('g:bebop_enabled')
+    call bebop#Init()
+else
+    command! -nargs=0 BebopEnable call bebop#Enable()
+    nnoremap <leader>be :BebopEnable<cr>
 endif
